@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A private, browser-only DICOM series viewer. Files never leave your device.">
+  <meta name="theme-color" content="#07110f">
+  <title>Local DICOM Viewer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2307110f'/%3E%3Cpath d='M8 4h8v16H8zM4 8h16v8H4z' fill='%2377f2b4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <a class="skip-link" href="#viewerWorkspace">Skip to viewer</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Local DICOM Viewer home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" role="img"><path d="M7 3.5h10v17H7zM3.5 7h17v10h-17z"/></svg>
+      </span>
+      <span>Local DICOM Viewer</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#viewerWorkspace">Viewer</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#guide">Guide</a>
+    </nav>
+    <span class="privacy-pill"><span aria-hidden="true">●</span> Local only</span>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div>
+        <p class="eyebrow">Clinical imaging, without the cloud</p>
+        <h1 id="heroTitle">Inspect a DICOM series directly in your browser.</h1>
+        <p class="hero-copy">Load local scans, navigate slices, and adjust display settings. No account, upload, or server-side storage.</p>
+      </div>
+      <div class="hero-status" aria-label="Privacy summary">
+        <span class="status-icon" aria-hidden="true">↯</span>
+        <div><strong>Private by design</strong><span>Data remains in this tab's memory.</span></div>
+      </div>
+    </section>
+
+    <section class="viewer-shell" id="viewerWorkspace" aria-labelledby="workspaceTitle">
+      <h2 class="sr-only" id="workspaceTitle">DICOM viewer workspace</h2>
+
+      <aside class="control-panel" aria-label="Series controls">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Series</p>
+            <h3>Local files</h3>
+          </div>
+          <span class="file-count" id="fileCount">0 slices</span>
+        </div>
+
+        <div class="upload-zone" id="dropZone">
+          <span class="upload-icon" aria-hidden="true">＋</span>
+          <strong>Drop DICOM files here</strong>
+          <span>Any local .dcm file or series</span>
+          <button class="button button-primary" id="selectFilesButton" type="button">Choose files</button>
+          <button class="button button-secondary" id="selectFolderButton" type="button">Choose folder</button>
+          <input id="fileInput" type="file" accept=".dcm,application/dicom" multiple hidden>
+          <input id="folderInput" type="file" webkitdirectory multiple hidden>
+        </div>
+
+        <div class="series-control">
+          <div class="control-label"><label for="sliceRange">Slice</label><output id="sliceOutput" for="sliceRange">— / —</output></div>
+          <input id="sliceRange" type="range" min="0" max="0" value="0" disabled>
+          <div class="slice-buttons">
+            <button class="icon-button" id="previousSlice" type="button" disabled aria-label="Previous slice">←</button>
+            <button class="icon-button" id="nextSlice" type="button" disabled aria-label="Next slice">→</button>
+          </div>
+        </div>
+
+        <dl class="metadata-list" aria-label="DICOM metadata">
+          <div><dt>Modality</dt><dd id="metaModality">—</dd></div>
+          <div><dt>Series</dt><dd id="metaSeries">—</dd></div>
+          <div><dt>Dimensions</dt><dd id="metaDimensions">—</dd></div>
+          <div><dt>Slice thickness</dt><dd id="metaThickness">—</dd></div>
+          <div><dt>File</dt><dd id="metaFile">—</dd></div>
+        </dl>
+
+        <button class="button button-danger" id="clearSeries" type="button" disabled>Clear local session</button>
+      </aside>
+
+      <div class="viewport-panel">
+        <div class="toolbar" aria-label="Image tools">
+          <div class="tool-group">
+            <button class="tool-button active" id="windowTool" type="button" aria-pressed="true">Window / level</button>
+            <button class="tool-button" id="zoomOut" type="button" aria-label="Zoom out">−</button>
+            <button class="tool-button" id="zoomIn" type="button" aria-label="Zoom in">＋</button>
+            <button class="tool-button" id="invertImage" type="button" aria-pressed="false">Invert</button>
+            <button class="tool-button" id="resetViewport" type="button">Reset</button>
+          </div>
+          <div class="tool-group">
+            <button class="tool-button" id="saveSnapshot" type="button" disabled>Save PNG</button>
+            <button class="tool-button" id="fullscreenButton" type="button">Fullscreen</button>
+          </div>
+        </div>
+
+        <div class="dicom-stage" id="dicomStage">
+          <div class="viewport" id="dicomViewport" role="img" aria-label="DICOM image viewport"></div>
+          <div class="empty-state" id="emptyState">
+            <span class="empty-icon" aria-hidden="true">⌁</span>
+            <h3>No series loaded</h3>
+            <p>Select one or more DICOM files to begin.</p>
+          </div>
+          <div class="viewport-overlay overlay-top-left" aria-hidden="true">
+            <span id="overlayModality">DICOM</span>
+            <span id="overlaySeries">Local series</span>
+          </div>
+          <div class="viewport-overlay overlay-top-right" aria-hidden="true">
+            <span id="overlayWindow">W — / L —</span>
+            <span id="overlayZoom">Zoom —</span>
+          </div>
+          <div class="viewport-overlay overlay-bottom-left" aria-hidden="true">
+            <span id="overlaySlice">Slice — / —</span>
+          </div>
+          <div class="loading-state" id="loadingState" role="status" aria-live="polite" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Decoding image…</span>
+          </div>
+        </div>
+        <p class="interaction-hint">Drag to adjust window/level · Scroll to change slices · Use ← → on the keyboard</p>
+      </div>
+    </section>
+
+    <section class="trust-section" id="privacy" aria-labelledby="privacyTitle">
+      <div class="section-heading">
+        <p class="eyebrow">Privacy architecture</p>
+        <h2 id="privacyTitle">Your scan never leaves your device.</h2>
+        <p>Files are decoded temporarily in browser memory. Closing or refreshing the page releases the session.</p>
+      </div>
+      <div class="trust-grid">
+        <article><span aria-hidden="true">01</span><h3>No uploads</h3><p>DICOM files are read with the browser File API and are never sent to this website.</p></article>
+        <article><span aria-hidden="true">02</span><h3>No persistence</h3><p>The viewer does not use cookies, localStorage, IndexedDB, analytics, or a database.</p></article>
+        <article><span aria-hidden="true">03</span><h3>Explicit cleanup</h3><p>Clear the session at any time to purge the active series and cached decoded images.</p></article>
+      </div>
+    </section>
+
+    <section class="guide-section" id="guide" aria-labelledby="guideTitle">
+      <div class="section-heading">
+        <p class="eyebrow">Quick guide</p>
+        <h2 id="guideTitle">From folder to first slice in seconds.</h2>
+      </div>
+      <ol class="steps">
+        <li><span>1</span><div><strong>Select a series</strong><p>Choose the DICOM files or the folder containing the series.</p></div></li>
+        <li><span>2</span><div><strong>Navigate</strong><p>Scroll, use the range control, or press the arrow keys.</p></div></li>
+        <li><span>3</span><div><strong>Inspect</strong><p>Drag to adjust window/level, zoom, invert, and export a snapshot.</p></div></li>
+      </ol>
+      <p class="compatibility-note">Supports common DICOM image transfer syntaxes handled by the browser decoder. Unsupported or malformed files are rejected locally and are never uploaded.</p>
+      <p class="disclaimer"><strong>Important:</strong> This educational viewer is not a certified medical device and must not be used for diagnosis or treatment decisions.</p>
+    </section>
+  </main>
+
+  <footer><span>Local DICOM Viewer</span><span>Browser-only · No patient data collected</span></footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="https://unpkg.com/cornerstone-core@2.6.1/dist/cornerstone.min.js" integrity="sha384-g7W7PJNIdGATX0lWeJoQcFZsdPs8U5VDD+xSYSnyeC2Q5kqHI0WeA2l7f+PZik+G" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/dicom-parser@1.8.21/dist/dicomParser.min.js" integrity="sha384-Z8ua3fbU1i9fPqw0gGLF0aw6yqnTK3GO6R9CFvnlvXB0x0AIFi6JqYvQ6v+s9kuw" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js" integrity="sha384-OGK5yRQLrQXDnbZRuhdKZncm0S8Lue2KRds62VusVCcEXVdpxu7zStnWB2uNFYFw" crossorigin="anonymous"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
