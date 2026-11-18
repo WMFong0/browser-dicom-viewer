@@ -1,4 +1,4 @@
-# Local DICOM Viewer
+# Medical Image Viewer
 
 A static, browser-only DICOM series viewer built for GitHub Pages. Local files are decoded in memory and are never uploaded or persisted by the application.
 

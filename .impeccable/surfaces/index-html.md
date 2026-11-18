@@ -5,7 +5,7 @@ primary_target: "index.html"
 related_targets: ["style.css","script.js"]
 ---
 
-# Local DICOM Viewer
+# Medical Image Viewer
 
 - Scope: Single-page web viewer; Operate mode.
 - Audience and job: A person opening local DICOM files or a series to inspect images without installing software or uploading clinical data.

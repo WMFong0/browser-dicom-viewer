@@ -1,5 +1,5 @@
 ---
-name: DICOM/Local
+name: Medical Image Viewer
 description: A private browser lightbox shaped as one precise imaging instrument.
 colors:
   paper: "#f3f4f6"
@@ -97,7 +97,7 @@ components:
     width: "min(100% - 2rem, 1500px)"
 ---
 
-# Design System: DICOM/Local
+# Design System: Medical Image Viewer
 
 ## Overview
 
