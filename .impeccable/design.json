@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-18T17:14:22Z",
+  "title": "Design System: DICOM/Local",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Cobalt Actuator",
+        "canonical": "#3157ed",
+        "tonalRamp": ["#09123d", "#122578", "#1e3ab0", "#3157ed", "#6680f2", "#9aacf7", "#cbd4fb", "#f1f4ff"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Instrument Paper",
+        "canonical": "#f3f4f6",
+        "tonalRamp": ["#25272b", "#42454b", "#62666e", "#858a94", "#adb1b9", "#d4d7dc", "#e8eaed", "#f7f8f9"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "canonical": "#14171c",
+        "tonalRamp": ["#0b0d10", "#14171c", "#292d34", "#484e58", "#6d7480", "#9ba1aa", "#cdd0d5", "#f3f4f6"]
+      },
+      "viewport": {
+        "role": "neutral",
+        "displayName": "Imaging Black",
+        "canonical": "#08090c",
+        "tonalRamp": ["#08090c", "#16181d", "#292c32", "#444851", "#696e78", "#989ca5", "#c9ccd1", "#f1f2f3"]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Clear-Session Red",
+        "canonical": "#a72d25",
+        "tonalRamp": ["#35100d", "#641b16", "#8b251f", "#a72d25", "#c65e57", "#de928d", "#efc4c1", "#fbedec"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Two-line product statement only." },
+      "headline": { "displayName": "Headline", "purpose": "Major explanatory heading." },
+      "body": { "displayName": "Body", "purpose": "Product and privacy explanation." },
+      "tool-label": { "displayName": "Tool Label", "purpose": "Compact operational controls and state." },
+      "button-label": { "displayName": "Button Label", "purpose": "Primary, secondary, and destructive actions." }
+    },
+    "shadows": [
+      { "name": "instrument-ambient", "value": "0 34px 80px -54px rgba(20, 23, 28, 0.45)", "purpose": "Grounds the complete viewer chassis." },
+      { "name": "toast-lift", "value": "0 16px 35px -18px rgba(0, 0, 0, 0.65)", "purpose": "Separates transient feedback from the page edge." },
+      { "name": "overlay-legibility", "value": "0 1px 2px #000", "purpose": "Keeps viewport metadata readable over images." }
+    ],
+    "motion": [
+      { "name": "instrument-ease", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "Disclosure and drag-state transitions." },
+      { "name": "arrival-ease", "value": "expo.out", "purpose": "Single GSAP page-arrival sequence." },
+      { "name": "state-fast", "value": "160ms ease", "purpose": "Toolbar hover and selected-state changes." }
+    ],
+    "breakpoints": [
+      { "name": "compact-desktop", "value": "1120px" },
+      { "name": "stacked-instrument", "value": "820px" },
+      { "name": "mobile-instrument", "value": "560px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The cobalt file-opening action used at the start of a local workflow.",
+      "html": "<button class=\"ds-btn-primary\">Open DICOM files</button>",
+      "css": ".ds-btn-primary{min-height:44px;padding:.65rem .9rem;border:0;border-radius:7px;background:#3157ed;color:#fff;font:650 .78rem Outfit,sans-serif;transition:background .18s ease,transform .18s ease}.ds-btn-primary:hover{background:#2446c7;transform:translateY(-1px)}.ds-btn-primary:focus-visible{outline:3px solid rgba(49,87,237,.28);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Quiet bordered action for folder selection and supporting operations.",
+      "html": "<button class=\"ds-btn-secondary\">Choose folder</button>",
+      "css": ".ds-btn-secondary{min-height:44px;padding:.65rem .9rem;border:1px solid #d4d8df;border-radius:7px;background:#fff;color:#14171c;font:650 .78rem Outfit,sans-serif;transition:background .18s ease,border-color .18s ease}.ds-btn-secondary:hover{border-color:#aeb4bf;background:#e9ebef}.ds-btn-secondary:focus-visible{outline:3px solid rgba(49,87,237,.28);outline-offset:2px}"
+    },
+    {
+      "name": "Active Tool Indicator",
+      "kind": "custom",
+      "refersTo": "tool-button-active",
+      "description": "Non-interactive mode readout for the persistent window-and-level tool.",
+      "html": "<span class=\"ds-tool-active\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h16M12 4v16\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>Window / level</span>",
+      "css": ".ds-tool-active{display:inline-flex;min-height:44px;align-items:center;gap:.42rem;padding:.45rem .58rem;border:1px solid #cbd4ff;border-radius:6px;background:#e7ecff;color:#2446c7;font:550 .78rem Outfit,sans-serif}.ds-tool-active svg{width:17px;fill:none;stroke:currentColor;stroke-width:1.55}"
+    },
+    {
+      "name": "Tool Button",
+      "kind": "button",
+      "refersTo": "tool-button",
+      "description": "Compact viewport operation with authored stroke iconography.",
+      "html": "<button class=\"ds-tool\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"M6.5 10.5h8m-4-4v8M15.5 15.5 21 21\"/></svg><span>Zoom</span></button>",
+      "css": ".ds-tool{display:inline-flex;min-height:44px;align-items:center;gap:.42rem;padding:.45rem .58rem;border:1px solid transparent;border-radius:6px;background:transparent;color:#626975;font:550 .78rem Outfit,sans-serif;transition:background .16s ease,color .16s ease}.ds-tool:hover{background:#e9ebef;color:#14171c}.ds-tool:focus-visible{outline:3px solid rgba(49,87,237,.28);outline-offset:2px}.ds-tool svg{width:17px;fill:none;stroke:currentColor;stroke-width:1.55}"
+    },
+    {
+      "name": "Upload Zone",
+      "kind": "custom",
+      "description": "Dashed local-file target that keeps selection actions together.",
+      "html": "<div class=\"ds-upload\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14\"/></svg><strong>Drop DICOM files</strong><span>Files stay in this tab</span></div>",
+      "css": ".ds-upload{display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:1.35rem 1rem;border:1px dashed #aeb4bf;border-radius:9px;background:#fafbfc;color:#14171c;font-family:Outfit,sans-serif}.ds-upload svg{width:25px;fill:none;stroke:#3157ed;stroke-width:1.6}.ds-upload span{color:#626975;font-size:.78rem}"
+    },
+    {
+      "name": "Viewer Surface",
+      "kind": "custom",
+      "refersTo": "viewer-shell",
+      "description": "Joined white control chassis and black imaging field.",
+      "html": "<div class=\"ds-viewer\"><aside>Series controls</aside><main>DICOM viewport</main></div>",
+      "css": ".ds-viewer{display:grid;grid-template-columns:3fr 9fr;min-height:240px;overflow:hidden;border:1px solid #aeb4bf;border-radius:14px;background:#fff;box-shadow:0 34px 80px -54px rgba(20,23,28,.45);font-family:Outfit,sans-serif}.ds-viewer aside{padding:1.35rem;color:#14171c}.ds-viewer main{display:grid;place-items:center;background:#08090c;color:#c5c9d1}"
+    },
+    {
+      "name": "Privacy Disclosure",
+      "kind": "custom",
+      "description": "Rule-bound accordion row without a card container.",
+      "html": "<button class=\"ds-disclosure\" aria-expanded=\"true\"><span>What leaves my device?</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></button>",
+      "css": ".ds-disclosure{display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;padding:1.4rem 0;border:0;border-top:1px solid #aeb4bf;border-bottom:1px solid #aeb4bf;background:transparent;color:#14171c;font:550 1.1rem Outfit,sans-serif;text-align:left}.ds-disclosure:focus-visible{outline:3px solid rgba(49,87,237,.28);outline-offset:2px}.ds-disclosure svg{width:20px;fill:none;stroke:currentColor;stroke-width:1.6;transform:rotate(180deg)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Private Lightbox",
+    "overview": "The browser becomes a calibrated viewing instrument: a quiet paper-colored room surrounding one optically dominant black image field. Controls remain physically attached to the image, and the interface earns trust through restraint rather than ornamental chrome.",
+    "keyCharacteristics": [
+      "One integrated control chassis and imaging field.",
+      "Paper, graphite, cobalt, and imaging black as the complete visual world.",
+      "One-pixel structural rules instead of nested cards.",
+      "Dense controls with generous reading space around the instrument.",
+      "Motion clarifies arrival, state, and disclosure, then gets out of the way."
+    ],
+    "rules": [
+      { "name": "The Cobalt Restraint Rule", "body": "Cobalt appears only for primary action, selection, focus, and live tool state; the image remains chromatically neutral.", "section": "colors" },
+      { "name": "The One Instrument Voice Rule", "body": "Outfit is the only typeface; hierarchy comes from scale, weight, line height, and negative tracking.", "section": "typography" },
+      { "name": "The Flat Instrument Rule", "body": "Internal modules never receive independent card shadows; depth belongs to the complete instrument or transient feedback.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep controls physically attached to the image field so the interface reads as one instrument.",
+      "Do reserve cobalt for primary action, selection, focus, and active operational state.",
+      "Do use one-pixel rules and contrast before adding depth.",
+      "Do preserve 44px minimum interactive targets and the reduced-motion path.",
+      "Do let the black viewport remain the dominant visual mass whenever an image can be inspected."
+    ],
+    "donts": [
+      "Don't turn tool groups, metadata, or privacy disclosures into separate floating cards.",
+      "Don't add gradients, decorative glass, or independent shadows to internal modules.",
+      "Don't introduce a second decorative accent or use Clear-Session Red outside destructive state.",
+      "Don't replace Outfit with an editorial display pairing or all-caps dashboard typography.",
+      "Don't soften the instrument into oversized pills; reserve the full pill for the optical aperture."
+    ]
+  }
+}

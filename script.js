@@ -10,6 +10,7 @@ const elements = {
   folderInput: document.querySelector("#folderInput"),
   selectFiles: document.querySelector("#selectFilesButton"),
   selectFolder: document.querySelector("#selectFolderButton"),
+  heroOpenFiles: document.querySelector("#heroOpenFiles"),
   fileCount: document.querySelector("#fileCount"),
   sliceRange: document.querySelector("#sliceRange"),
   sliceOutput: document.querySelector("#sliceOutput"),
@@ -32,7 +33,12 @@ const elements = {
   overlaySeries: document.querySelector("#overlaySeries"),
   overlayWindow: document.querySelector("#overlayWindow"),
   overlayZoom: document.querySelector("#overlayZoom"),
-  overlaySlice: document.querySelector("#overlaySlice")
+  overlaySlice: document.querySelector("#overlaySlice"),
+  errorState: document.querySelector("#errorState"),
+  errorMessage: document.querySelector("#errorMessage"),
+  retryFile: document.querySelector("#retryFile"),
+  chooseAnother: document.querySelector("#chooseAnother"),
+  clearAfterError: document.querySelector("#clearAfterError")
 };
 
 const state = {
@@ -91,6 +97,7 @@ async function loadFiles(fileList) {
   [elements.sliceRange, elements.previousSlice, elements.nextSlice, elements.clearSeries].forEach((control) => { control.disabled = false; });
   elements.saveSnapshot.disabled = true;
   elements.emptyState.hidden = true;
+  elements.errorState.hidden = true;
 
   await displaySlice(0);
 }
@@ -100,6 +107,7 @@ async function displaySlice(index) {
   const boundedIndex = Math.max(0, Math.min(index, state.imageIds.length - 1));
   const token = ++state.loadToken;
   elements.loadingState.hidden = false;
+  elements.errorState.hidden = true;
 
   try {
     const image = await cornerstone.loadAndCacheImage(state.imageIds[boundedIndex]);
@@ -112,7 +120,9 @@ async function displaySlice(index) {
     elements.saveSnapshot.disabled = false;
   } catch (error) {
     console.error(error);
-    showToast(`Unable to decode ${state.files[boundedIndex]?.name || "this file"}.`);
+    const filename = state.files[boundedIndex]?.name || "This file";
+    elements.errorMessage.textContent = `${filename} may be malformed or use an unsupported transfer syntax.`;
+    elements.errorState.hidden = false;
   } finally {
     if (token === state.loadToken) elements.loadingState.hidden = true;
   }
@@ -183,6 +193,7 @@ function clearSession(notify = true) {
 
   elements.emptyState.hidden = false;
   elements.loadingState.hidden = true;
+  elements.errorState.hidden = true;
   elements.fileCount.textContent = "0 slices";
   elements.sliceOutput.textContent = "— / —";
   elements.overlaySlice.textContent = "Slice — / —";
@@ -201,9 +212,13 @@ function clearSession(notify = true) {
 
 elements.selectFiles.addEventListener("click", () => elements.fileInput.click());
 elements.selectFolder.addEventListener("click", () => elements.folderInput.click());
+elements.heroOpenFiles.addEventListener("click", () => elements.fileInput.click());
 elements.fileInput.addEventListener("change", (event) => loadFiles(event.target.files));
 elements.folderInput.addEventListener("change", (event) => loadFiles(event.target.files));
 elements.clearSeries.addEventListener("click", () => clearSession());
+elements.retryFile.addEventListener("click", () => displaySlice(state.index));
+elements.chooseAnother.addEventListener("click", () => elements.fileInput.click());
+elements.clearAfterError.addEventListener("click", () => clearSession());
 elements.previousSlice.addEventListener("click", () => changeSlice(-1));
 elements.nextSlice.addEventListener("click", () => changeSlice(1));
 elements.sliceRange.addEventListener("input", (event) => displaySlice(Number(event.target.value)));
@@ -295,3 +310,32 @@ window.addEventListener("resize", () => {
 });
 
 window.addEventListener("beforeunload", () => clearSession(false));
+
+document.querySelectorAll("[data-accordion] .accordion-item > button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const selectedItem = button.closest(".accordion-item");
+    document.querySelectorAll("[data-accordion] .accordion-item").forEach((item) => {
+      const expanded = item === selectedItem && !item.classList.contains("expanded");
+      item.classList.toggle("expanded", expanded);
+      item.querySelector("button").setAttribute("aria-expanded", String(expanded));
+    });
+  });
+});
+
+/**
+ * Establishes the page's single motion system: an opening reveal, a viewport
+ * arrival, and a scrubbed privacy statement. Content remains visible when
+ * GSAP is absent or motion is reduced.
+ *
+ * Returns:
+ *     void: Registers and schedules motion against the current document.
+ */
+function initializeMotion() {
+  if (!window.gsap || !window.ScrollTrigger || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from(".hero-copy-block > *", { y: 26, opacity: 0, duration: .9, stagger: .09, ease: "expo.out" });
+  gsap.from(".viewer-shell", { y: 42, opacity: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".viewer-shell", start: "top 88%", once: true } });
+  gsap.fromTo(".scrub-copy span", { opacity: .16 }, { opacity: 1, stagger: .12, ease: "none", scrollTrigger: { trigger: ".scrub-copy", start: "top 78%", end: "bottom 52%", scrub: true } });
+}
+
+initializeMotion();
