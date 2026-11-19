@@ -168,7 +168,7 @@ The palette separates the quiet workspace from the black diagnostic field, using
 
 The spatial model alternates open reading space with one bounded operating surface. The header is a 64px sticky three-part grid; the main statement sits in a 1200px container; the viewer expands to 1500px; the privacy explanation resolves inside 1240px. Horizontal gutters remain at 1rem per side, tightening only for the mobile viewer shell.
 
-The operating surface uses a 12-column grid: controls occupy three columns and the viewport nine above 1120px, then four and eight through the intermediate range. At 820px and below, the instrument stacks vertically while the control area becomes a two-column grid. At 560px and below, upload, viewport, series controls, metadata, and session clearing are reordered into one continuous instrument; the toolbar becomes a compact five-column row plus a two-column export row.
+The operating surface uses a 12-column grid: controls occupy three columns and the viewport nine above 1120px, then four and eight through the intermediate range. At 820px and below, the instrument stacks vertically while the control area becomes a two-column grid. At 560px and below, upload, viewport, series controls, metadata, and session clearing are reordered into one continuous instrument; the toolbar becomes a compact six-column row plus a two-column export row.
 
 Spacing follows functional proximity rather than a decorative card rhythm. Tight gaps (`0.35rem–0.75rem`) bind controls, medium gaps (`1rem–1.35rem`) organize control groups, and large fluid padding separates the hero, instrument, privacy section, and footer. Interactive controls maintain a 44px minimum target.
 
@@ -223,7 +223,7 @@ One-pixel solid rules define structural boundaries; the file drop target uses a 
 
 ### Tool and Slice Controls
 
-- **Toolbar Buttons:** 6px radius, transparent at rest, Muted foreground, and a 44px minimum target. Hover uses Soft Equipment Grey; selected or pressed state uses Cobalt Wash, a pale cobalt border, and Pressed Cobalt foreground.
+- **Toolbar Buttons:** 6px radius, transparent at rest, Muted foreground, and a 44px minimum target. Window/level and pan are mutually exclusive drag modes; hover uses Soft Equipment Grey, while selected or pressed state uses Cobalt Wash, a pale cobalt border, and Pressed Cobalt foreground.
 - **Slice Range:** Native range control spans the panel width and uses the cobalt accent.
 - **Previous / Next:** Equal-width 44px icon controls with a Hairline border and the same secondary hover behavior.
 - **Responsive:** Text labels disappear below 1120px except for the wide active tool; all tool labels disappear on narrow mobile layouts.

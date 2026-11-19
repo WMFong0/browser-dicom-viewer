@@ -7,7 +7,7 @@ A static, browser-only DICOM series viewer built for GitHub Pages. Local files a
 - Multi-file and folder selection
 - Generic `.dcm` support with no dataset-specific assumptions
 - Slice navigation by slider, mouse wheel, buttons, and arrow keys
-- Window/level adjustment by dragging
+- Switchable window/level and pan drag modes
 - Zoom, invert, reset, fullscreen, and PNG snapshot export
 - Basic non-identifying DICOM metadata
 - Explicit session cleanup

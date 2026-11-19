@@ -24,7 +24,7 @@ The viewer performs decoding and interaction entirely inside the current browser
 
 ## Operating Context
 
-Users select individual DICOM files or a folder, navigate slices with direct controls or a keyboard, adjust window and level by dragging, and clear the session when finished.
+Users select individual DICOM files or a folder, navigate slices with direct controls or a keyboard, switch between window/level and pan drag modes, and clear the session when finished.
 
 ## Capabilities and Constraints
 

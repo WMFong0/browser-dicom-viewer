@@ -280,8 +280,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer;
 
 .tool-button:hover:not(:disabled) { background: var(--surface-soft); color: var(--ink); }
 .tool-button.active, .tool-button[aria-pressed="true"] { border-color: #cbd4ff; background: var(--accent-soft); color: var(--accent-hover); }
-.tool-indicator { cursor: default; }
-.tool-indicator:hover { background: var(--accent-soft); color: var(--accent-hover); }
 .tool-button svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
 .tool-button .fill-path { fill: currentColor; stroke: none; }
 
@@ -295,7 +293,10 @@ input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer;
 }
 
 .dicom-stage::before { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px); background-size: 48px 48px; content: ""; }
-.viewport { position: absolute; z-index: 1; inset: 0; cursor: crosshair; }
+.viewport { position: absolute; z-index: 1; inset: 0; }
+.dicom-stage[data-tool="window"] .viewport { cursor: crosshair; }
+.dicom-stage[data-tool="pan"] .viewport { cursor: grab; }
+.dicom-stage[data-tool="pan"].is-dragging .viewport { cursor: grabbing; }
 .viewport canvas { image-rendering: auto; }
 
 .empty-state, .loading-state, .error-state { position: absolute; z-index: 3; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; }
@@ -362,7 +363,7 @@ footer { display: flex; align-items: center; justify-content: space-between; gap
   .control-panel { grid-column: span 4; }
   .viewport-panel { grid-column: span 8; }
   .tool-button span { display: none; }
-  .tool-wide span { display: inline; }
+  .tool-mode[aria-pressed="true"] span { display: inline; }
 }
 
 @media (max-width: 820px) {
@@ -402,9 +403,9 @@ footer { display: flex; align-items: center; justify-content: space-between; gap
   .viewport-overlay { font-size: .75rem; }
   .disclaimer { font-size: .78rem; }
   .toolbar { align-items: stretch; flex-direction: column; }
-  .tool-group { display: grid; grid-template-columns: repeat(5, 1fr); }
+  .tool-group { display: grid; grid-template-columns: repeat(6, 1fr); }
   .tool-group-end { grid-template-columns: 1fr 1fr; width: 100%; margin: 0; }
-  .tool-wide span { display: none; }
+  .tool-mode[aria-pressed="true"] span { display: none; }
   .tool-button { padding-inline: .35rem; }
   .dicom-stage { min-height: 72vw; max-height: 68vh; }
   .interaction-hint { display: none; }

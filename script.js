@@ -17,6 +17,8 @@ const elements = {
   previousSlice: document.querySelector("#previousSlice"),
   nextSlice: document.querySelector("#nextSlice"),
   clearSeries: document.querySelector("#clearSeries"),
+  windowTool: document.querySelector("#windowTool"),
+  panTool: document.querySelector("#panTool"),
   zoomIn: document.querySelector("#zoomIn"),
   zoomOut: document.querySelector("#zoomOut"),
   invertImage: document.querySelector("#invertImage"),
@@ -47,6 +49,7 @@ const state = {
   index: 0,
   image: null,
   loadToken: 0,
+  activeTool: "window",
   dragging: false,
   pointer: null,
   toastTimer: null
@@ -177,6 +180,49 @@ function mutateViewport(mutator) {
   updateViewportOverlay();
 }
 
+/**
+ * Selects the primary drag interaction and synchronizes its visual, semantic,
+ * and pointer-cursor state without changing the rendered image.
+ *
+ * Args:
+ *     tool (string): Supported interaction identifier, either `window` or `pan`.
+ *
+ * Returns:
+ *     void: Updates the shared interaction state and both mode controls.
+ */
+function setActiveTool(tool) {
+  if (!["window", "pan"].includes(tool)) return;
+  state.activeTool = tool;
+  [[elements.windowTool, tool === "window"], [elements.panTool, tool === "pan"]].forEach(([control, active]) => {
+    control.classList.toggle("active", active);
+    control.setAttribute("aria-pressed", String(active));
+  });
+  elements.stage.dataset.tool = tool;
+  stopDragging();
+}
+
+/**
+ * Converts pointer movement into Cornerstone image-space translation while
+ * preserving physical pixel-spacing ratios for anisotropic images.
+ *
+ * Args:
+ *     viewport (Object): Mutable Cornerstone viewport containing scale and translation state.
+ *     deltaX (number): Horizontal pointer displacement measured in CSS pixels.
+ *     deltaY (number): Vertical pointer displacement measured in CSS pixels.
+ *
+ * Returns:
+ *     void: Mutates the supplied viewport translation in image coordinates.
+ */
+function panViewport(viewport, deltaX, deltaY) {
+  const rowSpacing = Number(state.image?.rowPixelSpacing) || 1;
+  const columnSpacing = Number(state.image?.columnPixelSpacing) || 1;
+  const widthScale = viewport.scale * (rowSpacing < columnSpacing ? columnSpacing / rowSpacing : 1);
+  const heightScale = viewport.scale * (columnSpacing < rowSpacing ? rowSpacing / columnSpacing : 1);
+  viewport.translation ||= { x: 0, y: 0 };
+  viewport.translation.x += deltaX / widthScale;
+  viewport.translation.y += deltaY / heightScale;
+}
+
 function clearSession(notify = true) {
   ++state.loadToken;
   state.files = [];
@@ -207,6 +253,7 @@ function clearSession(notify = true) {
   [elements.metaModality, elements.metaSeries, elements.metaDimensions, elements.metaThickness, elements.metaFile].forEach((item) => { item.textContent = "—"; });
   elements.fileInput.value = "";
   elements.folderInput.value = "";
+  setActiveTool("window");
   if (notify) showToast("Local series cleared from this session.");
 }
 
@@ -242,30 +289,41 @@ elements.stage.addEventListener("wheel", (event) => {
 }, { passive: false });
 
 elements.stage.addEventListener("pointerdown", (event) => {
-  if (!state.image) return;
+  if (!state.image || state.dragging || (event.pointerType === "mouse" && event.button !== 0)) return;
+  event.preventDefault();
   state.dragging = true;
-  state.pointer = { x: event.clientX, y: event.clientY };
+  state.pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  elements.stage.classList.add("is-dragging");
   elements.stage.setPointerCapture(event.pointerId);
 });
 
 elements.stage.addEventListener("pointermove", (event) => {
-  if (!state.dragging || !state.pointer) return;
+  if (!state.dragging || !state.pointer || state.pointer.id !== event.pointerId) return;
   const deltaX = event.clientX - state.pointer.x;
   const deltaY = event.clientY - state.pointer.y;
-  state.pointer = { x: event.clientX, y: event.clientY };
+  state.pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
   mutateViewport((viewport) => {
+    if (state.activeTool === "pan") {
+      panViewport(viewport, deltaX, deltaY);
+      return;
+    }
     viewport.voi.windowWidth = Math.max(1, viewport.voi.windowWidth + deltaX * 2);
     viewport.voi.windowCenter += deltaY * 2;
   });
 });
 
-function stopDragging() {
+function stopDragging(event) {
+  if (event?.pointerId != null && state.pointer?.id !== event.pointerId) return;
   state.dragging = false;
   state.pointer = null;
+  elements.stage.classList.remove("is-dragging");
 }
 
 elements.stage.addEventListener("pointerup", stopDragging);
 elements.stage.addEventListener("pointercancel", stopDragging);
+elements.stage.addEventListener("lostpointercapture", stopDragging);
+elements.windowTool.addEventListener("click", () => setActiveTool("window"));
+elements.panTool.addEventListener("click", () => setActiveTool("pan"));
 elements.zoomIn.addEventListener("click", () => mutateViewport((viewport) => { viewport.scale *= 1.15; }));
 elements.zoomOut.addEventListener("click", () => mutateViewport((viewport) => { viewport.scale /= 1.15; }));
 elements.invertImage.addEventListener("click", () => mutateViewport((viewport) => {
@@ -301,6 +359,8 @@ document.addEventListener("keydown", (event) => {
   if (["INPUT", "BUTTON"].includes(document.activeElement?.tagName)) return;
   if (event.key === "ArrowLeft") changeSlice(-1);
   if (event.key === "ArrowRight") changeSlice(1);
+  if (event.key.toLowerCase() === "w") elements.windowTool.click();
+  if (event.key.toLowerCase() === "p") elements.panTool.click();
   if (event.key.toLowerCase() === "r") elements.resetViewport.click();
   if (event.key.toLowerCase() === "i") elements.invertImage.click();
 });
