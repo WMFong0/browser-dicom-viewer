@@ -57,6 +57,7 @@ const state = {
 
 const requiredLibraries = ["cornerstone", "dicomParser", "cornerstoneWADOImageLoader"];
 const librariesReady = requiredLibraries.every((name) => Boolean(window[name]));
+const PAN_WHEEL_ZOOM_RATE = 0.005448007021502821;
 
 if (librariesReady) {
   cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
@@ -302,7 +303,7 @@ elements.stage.addEventListener("wheel", (event) => {
   event.preventDefault();
   if (state.activeTool === "pan") {
     const boundedDelta = Math.max(-100, Math.min(100, event.deltaY));
-    mutateViewport((viewport) => zoomViewport(viewport, Math.exp(-boundedDelta * 0.003)));
+    mutateViewport((viewport) => zoomViewport(viewport, Math.exp(-boundedDelta * PAN_WHEEL_ZOOM_RATE)));
     return;
   }
   changeSlice(event.deltaY > 0 ? 1 : -1);
