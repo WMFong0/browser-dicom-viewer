@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=20261119-1">
+  <link rel="stylesheet" href="./style.css?v=20261119-2">
 </head>
 <body>
   <!--
@@ -75,7 +75,7 @@
         <div class="toolbar" aria-label="Image tools">
           <div class="tool-group">
             <button class="tool-button tool-mode active" id="windowTool" type="button" aria-pressed="true" aria-keyshortcuts="W" title="Window / level (W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="3"/></svg><span>Window / level</span></button>
-            <button class="tool-button tool-mode" id="panTool" type="button" aria-pressed="false" aria-keyshortcuts="P" title="Pan (P)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3 9.5 5.5M12 3l2.5 2.5M21 12l-2.5-2.5M21 12l-2.5 2.5M12 21l-2.5-2.5M12 21l2.5-2.5M3 12l2.5-2.5M3 12l2.5 2.5"/></svg><span>Pan</span></button>
+            <button class="tool-button tool-mode" id="panTool" type="button" aria-pressed="false" aria-keyshortcuts="P" title="Pan (P) · Wheel to zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3 9.5 5.5M12 3l2.5 2.5M21 12l-2.5-2.5M21 12l-2.5 2.5M12 21l-2.5-2.5M12 21l2.5-2.5M3 12l2.5-2.5M3 12l2.5 2.5"/></svg><span>Pan</span></button>
             <button class="tool-button" id="zoomOut" type="button" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M6.5 10.5h8M15.5 15.5 21 21"/></svg></button>
             <button class="tool-button" id="zoomIn" type="button" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M6.5 10.5h8m-4-4v8M15.5 15.5 21 21"/></svg></button>
             <button class="tool-button" id="invertImage" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" class="fill-path"/></svg><span>Invert</span></button>
@@ -100,7 +100,7 @@
             <div><button type="button" id="retryFile">Retry</button><button type="button" id="chooseAnother">Choose other files</button><button type="button" id="clearAfterError">Clear session</button></div>
           </div>
         </div>
-        <p class="interaction-hint"><span>W</span> window / level <span>P</span> pan <span>Scroll</span> change slice <span>R</span> reset <span>I</span> invert</p>
+        <p class="interaction-hint"><span>W</span> window / level <span>P</span> pan <span>Wheel</span> slices / zoom in Pan <span>R</span> reset <span>I</span> invert</p>
       </div>
     </section>
 
@@ -125,6 +125,6 @@
   <script src="https://unpkg.com/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js" integrity="sha384-OGK5yRQLrQXDnbZRuhdKZncm0S8Lue2KRds62VusVCcEXVdpxu7zStnWB2uNFYFw" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous"></script>
-  <script src="./script.js?v=20261119-1"></script>
+  <script src="./script.js?v=20261119-2"></script>
 </body>
 </html>

@@ -223,6 +223,21 @@ function panViewport(viewport, deltaX, deltaY) {
   viewport.translation.y += deltaY / heightScale;
 }
 
+/**
+ * Applies bounded multiplicative zoom so wheel, trackpad, and toolbar actions
+ * share identical limits without allowing an unusable zero-scale viewport.
+ *
+ * Args:
+ *     viewport (Object): Mutable Cornerstone viewport containing the current scale.
+ *     factor (number): Positive zoom multiplier, above one to enlarge and below one to reduce.
+ *
+ * Returns:
+ *     void: Mutates the supplied viewport scale within the supported range.
+ */
+function zoomViewport(viewport, factor) {
+  viewport.scale = Math.min(20, Math.max(0.05, viewport.scale * factor));
+}
+
 function clearSession(notify = true) {
   ++state.loadToken;
   state.files = [];
@@ -285,6 +300,11 @@ elements.dropZone.addEventListener("drop", (event) => loadFiles(event.dataTransf
 elements.stage.addEventListener("wheel", (event) => {
   if (!state.imageIds.length) return;
   event.preventDefault();
+  if (state.activeTool === "pan") {
+    const boundedDelta = Math.max(-100, Math.min(100, event.deltaY));
+    mutateViewport((viewport) => zoomViewport(viewport, Math.exp(-boundedDelta * 0.0015)));
+    return;
+  }
   changeSlice(event.deltaY > 0 ? 1 : -1);
 }, { passive: false });
 
@@ -324,8 +344,8 @@ elements.stage.addEventListener("pointercancel", stopDragging);
 elements.stage.addEventListener("lostpointercapture", stopDragging);
 elements.windowTool.addEventListener("click", () => setActiveTool("window"));
 elements.panTool.addEventListener("click", () => setActiveTool("pan"));
-elements.zoomIn.addEventListener("click", () => mutateViewport((viewport) => { viewport.scale *= 1.15; }));
-elements.zoomOut.addEventListener("click", () => mutateViewport((viewport) => { viewport.scale /= 1.15; }));
+elements.zoomIn.addEventListener("click", () => mutateViewport((viewport) => zoomViewport(viewport, 1.15)));
+elements.zoomOut.addEventListener("click", () => mutateViewport((viewport) => zoomViewport(viewport, 1 / 1.15)));
 elements.invertImage.addEventListener("click", () => mutateViewport((viewport) => {
   viewport.invert = !viewport.invert;
   elements.invertImage.setAttribute("aria-pressed", String(viewport.invert));
