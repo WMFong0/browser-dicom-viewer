@@ -302,7 +302,7 @@ elements.stage.addEventListener("wheel", (event) => {
   event.preventDefault();
   if (state.activeTool === "pan") {
     const boundedDelta = Math.max(-100, Math.min(100, event.deltaY));
-    mutateViewport((viewport) => zoomViewport(viewport, Math.exp(-boundedDelta * 0.0015)));
+    mutateViewport((viewport) => zoomViewport(viewport, Math.exp(-boundedDelta * 0.003)));
     return;
   }
   changeSlice(event.deltaY > 0 ? 1 : -1);
